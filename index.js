@@ -71,6 +71,19 @@ async function run() {
       });
     };
 
+    // users related api
+     // post users
+     app.post("/users", async (req, res) => {
+        const user = req.body;
+        const query = { email: user.email };
+        const existingUser = await UsersCollection.findOne(query);
+        if (existingUser) {
+          return res.send({ message: "user already exists", insertedId: null });
+        }
+        const result = await UsersCollection.insertOne(user);
+        res.send(result);
+      });
+
     //creating Token
     app.post("/jwt", async (req, res) => {
       const user = req.body;
