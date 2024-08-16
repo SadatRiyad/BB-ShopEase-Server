@@ -53,7 +53,23 @@ async function run() {
     const UsersCollection = db.collection("Users");
     const ProductsCollection = db.collection("Products");
 
-
+    // verifyToken
+    const verifyToken = (req, res, next) => {
+      const token = req.cookies?.token;
+      // console.log("value inside verifyToken", token);
+      if (!token) {
+        return res.status(401).send({ error: "Unauthorized" });
+      }
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          console.log(err);
+          return res.status(401).send({ error: "Unauthorized" });
+        }
+        // console.log("value in the token", decoded);
+        req.user = decoded;
+        next();
+      });
+    };
 
     //creating Token
     app.post("/jwt", async (req, res) => {
