@@ -45,5 +45,40 @@ app.get("/", (req, res) => {
   res.send("BB-ShopEase server is running");
 });
 
+async function run() {
+  try {
+    // await client.connect();
+    // Database Collections
+    const db = client.db("BB-ShopEaseDB");
+    const UsersCollection = db.collection("Users");
+    const ProductsCollection = db.collection("Products");
+
+
+
+    //creating Token
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      // console.log("user for token", user);
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "7d",
+      });
+      res.cookie("token", token, cookieOptions).send({ token });
+    });
+
+    //clearing Token
+    app.post("/logout", async (req, res) => {
+      const user = req.body;
+      console.log("logging out", user);
+      res
+        .clearCookie("token", { ...cookieOptions, maxAge: 0 })
+        .send({ success: true });
+    });
+  } finally {
+    // Ensures that the client will close when you finish/error
+    // await client.close();
+  }
+}
+run().catch(console.log);
+
 // Listen for incoming requests
 app.listen(port, () => console.log(`Server is running on port ${port}`));
