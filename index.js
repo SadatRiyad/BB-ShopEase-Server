@@ -31,7 +31,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
+    //"http://localhost:5173",
       "https://bb-shopease-sadatriyad.surge.sh",
       "https://bb-shopease.netlify.app",
       "https://binarybeasts-auth.web.app",
