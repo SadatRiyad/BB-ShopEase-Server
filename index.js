@@ -71,18 +71,46 @@ async function run() {
       });
     };
 
+    // products related api
+    // get all products using search and filter
+    app.get("/products", async (req, res) => {
+      const { search, filter } = req.query;
+      const query = {};
+      if (search) {
+        query.$text = { $search: search };
+      }
+      if (filter) {
+        query.category = filter;
+      }
+      const data = ProductsCollection.find(query).sort({ createdAt: -1 });
+      const result = await data.toArray();
+      res.send(result);
+    });
+    // app.get("/products", async (req, res) => {
+    //   const data = ProductsCollection.find().sort({ createdAt: -1 });
+    //   const result = await data.toArray();
+    //   res.send(result);
+    // });
+
+    // post product
+    app.post("/products", verifyToken, async (req, res) => {
+      const product = req.body;
+      const result = await ProductsCollection.insertOne(product);
+      res.send(result);
+    });
+
     // users related api
-     // post users
-     app.post("/users", async (req, res) => {
-        const user = req.body;
-        const query = { email: user.email };
-        const existingUser = await UsersCollection.findOne(query);
-        if (existingUser) {
-          return res.send({ message: "user already exists", insertedId: null });
-        }
-        const result = await UsersCollection.insertOne(user);
-        res.send(result);
-      });
+    // post users
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const query = { email: user.email };
+      const existingUser = await UsersCollection.findOne(query);
+      if (existingUser) {
+        return res.send({ message: "user already exists", insertedId: null });
+      }
+      const result = await UsersCollection.insertOne(user);
+      res.send(result);
+    });
 
     //creating Token
     app.post("/jwt", async (req, res) => {
