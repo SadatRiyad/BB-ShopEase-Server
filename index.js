@@ -52,6 +52,7 @@ async function run() {
     const db = client.db("BB-ShopEaseDB");
     const UsersCollection = db.collection("Users");
     const ProductsCollection = db.collection("Products");
+    const ContactUsCollection = db.collection("ContactUs");
 
     // verifyToken
     const verifyToken = (req, res, next) => {
@@ -96,6 +97,13 @@ async function run() {
     app.post("/products", verifyToken, async (req, res) => {
       const product = req.body;
       const result = await ProductsCollection.insertOne(product);
+      res.send(result);
+    });
+
+    // post ContactUs section msg
+    app.post("/contactus", async (req, res) => {
+      const ContactUsMsg = req.body;
+      const result = await ContactUsCollection.insertOne(ContactUsMsg);
       res.send(result);
     });
 
