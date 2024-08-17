@@ -87,11 +87,6 @@ async function run() {
       const result = await data.toArray();
       res.send(result);
     });
-    // app.get("/products", async (req, res) => {
-    //   const data = ProductsCollection.find().sort({ createdAt: -1 });
-    //   const result = await data.toArray();
-    //   res.send(result);
-    // });
 
     // post product
     app.post("/products", verifyToken, async (req, res) => {
